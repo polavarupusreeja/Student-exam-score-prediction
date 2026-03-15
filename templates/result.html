@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result - Student Score Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="result-page">
+    <main class="result-card-premium">
+        <section class="animate-delay-1">
+            <h3>Estimated Student Score</h3>
+            <div class="score-display" id="score-value" data-target="{{ prediction }}">0.00</div>
+            <p style="color: var(--text-muted); margin-bottom: 30px;" class="animate-delay-2">Great job! Based on your input, this is the predicted performance.</p>
+            <a href="/" style="text-decoration: none;">
+                <button type="button" class="animate-delay-2">Predict Another Score</button>
+            </a>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scoreElement = document.getElementById('score-value');
+            const targetScore = parseFloat(scoreElement.getAttribute('data-target'));
+            let currentScore = 0;
+            const duration = 1500; // 1.5 seconds
+            const startTime = performance.now();
+
+            function animate(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                
+                // Ease out cubic
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                currentScore = easeProgress * targetScore;
+                
+                scoreElement.textContent = currentScore.toFixed(2);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        });
+    </script>
+</body>
+</html>
