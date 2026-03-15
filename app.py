@@ -26,9 +26,27 @@ def predict():
                                columns=['hours_studied', 'sleep_hours', 'attendance_percent', 'previous_scores'])
 
         # Make prediction
-        prediction = model.predict(features)[0]
+        prediction = float(model.predict(features)[0])
 
-        return render_template('index.html', prediction_text=f'Estimated Student Score: {prediction:.2f}')
+        # Determine performance level and suggestion
+        if prediction < 40:
+            performance = "Poor"
+            color = "#ef4444" # Red
+            suggestion = "Consider increasing your study hours and ensuring consistent attendance to improve your scores."
+        elif prediction < 75:
+            performance = "Average"
+            color = "#f59e0b" # Yellow
+            suggestion = "You're doing okay, but more consistent practice and reviewing key concepts could help you reach the next level."
+        else:
+            performance = "Good"
+            color = "#22c55e" # Green
+            suggestion = "Good keep it up!"
+
+        return render_template('result.html', 
+                             prediction=f'{prediction:.2f}', 
+                             performance=performance, 
+                             color=color, 
+                             suggestion=suggestion)
     except Exception as e:
         return render_template('index.html', prediction_text=f'Error: {str(e)}')
 

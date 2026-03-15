@@ -250,8 +250,35 @@ button:active {
 }
 
 @keyframes glow {
-    from { filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5)); }
-    to { filter: drop-shadow(0 0 30px rgba(168, 85, 247, 0.8)); }
+    from { filter: drop-shadow(0 0 10px var(--glow-color, rgba(99, 102, 241, 0.5))); }
+    to { filter: drop-shadow(0 0 30px var(--glow-color, rgba(168, 85, 247, 0.8))); }
+}
+
+.suggestion-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px 0 30px 0;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.suggestion-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-white);
+}
+
+.performance-label {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
 }
 
 .animate-delay-1 { animation-delay: 0.2s; }
