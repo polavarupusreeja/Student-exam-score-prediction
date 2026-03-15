@@ -19,13 +19,41 @@
         </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <audio id="tick-sound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+    <audio id="success-sound" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const scoreElement = document.getElementById('score-value');
+            const tickSound = document.getElementById('tick-sound');
+            const successSound = document.getElementById('success-sound');
             const targetScore = parseFloat(scoreElement.getAttribute('data-target'));
+            
             let currentScore = 0;
-            const duration = 1500; // 1.5 seconds
+            const duration = 2000; // 2 seconds
             const startTime = performance.now();
+            let lastTickValue = -1;
+
+            function triggerConfetti() {
+                const duration = 3 * 1000;
+                const animationEnd = Date.now() + duration;
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+                const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+                const interval = setInterval(function() {
+                    const timeLeft = animationEnd - Date.now();
+
+                    if (timeLeft <= 0) {
+                        return clearInterval(interval);
+                    }
+
+                    const particleCount = 50 * (timeLeft / duration);
+                    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+                    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+                }, 250);
+            }
 
             function animate(currentTime) {
                 const elapsedTime = currentTime - startTime;
@@ -37,11 +65,25 @@
                 
                 scoreElement.textContent = currentScore.toFixed(2);
 
+                // Play tick sound for every integer increase
+                const currentInt = Math.floor(currentScore);
+                if (currentInt > lastTickValue) {
+                    tickSound.currentTime = 0;
+                    tickSound.play().catch(e => console.log('Audio wait for interaction'));
+                    lastTickValue = currentInt;
+                }
+
                 if (progress < 1) {
                     requestAnimationFrame(animate);
+                } else {
+                    // Final state
+                    scoreElement.textContent = targetScore.toFixed(2);
+                    successSound.play().catch(e => console.log('Audio wait for interaction'));
+                    triggerConfetti();
                 }
             }
 
+            // Start animation
             requestAnimationFrame(animate);
         });
     </script>
